@@ -10,7 +10,7 @@
     6-d*2);return b}},e=e.charenc={};e.UTF8={stringToBytes:function(a){return f.stringToBytes(unescape(encodeURIComponent(a)))},bytesToString:function(a){return decodeURIComponent(escape(f.bytesToString(a)))}};var f=e.Binary={stringToBytes:function(a){for(var b=[],c=0;c<a.length;c++)b.push(a.charCodeAt(c)&255);return b},bytesToString:function(a){for(var b=[],c=0;c<a.length;c++)b.push(String.fromCharCode(a[c]));return b.join("")}}}();
 
 /*
- * sha1File v1.0
+ * sha1File v1.0.1
  * https://github.com/dwsVad/sha1File
  * (c) 2014 by Protsenko Vadim. All rights reserved.
  * https://github.com/dwsVad/sha1File/blob/master/LICENSE
