@@ -18,7 +18,6 @@
 function sha1File(settings)
 {
     var hash = [1732584193, -271733879, -1732584194, 271733878, -1009589776];
-    var hexHash;
     var buffer = 1024 * 16 * 64;
     var sha1 = function (block, hash)
     {
@@ -83,9 +82,10 @@ function sha1File(settings)
         return [h0, h1, h2, h3, h4];
     }
 
-    var run = function(file,start,end)
+    var run = function(file,inStart,inEnd)
     {
-        end = Math.min(end, file.size);
+        var end = Math.min(inEnd, file.size);
+        var start = inStart;
         var reader = new FileReader();
 
         reader.onload = function()
@@ -109,9 +109,7 @@ function sha1File(settings)
                 block[((bLeft + 64 >>> 9) << 4) + 15] = bTotalL;
 
                 hash = sha1(block, hash);
-
-                hexHash = Crypto.util.bytesToHex(Crypto.util.wordsToBytes(hash));
-                file.sha1_hash = hexHash;
+                file.sha1_hash = Crypto.util.bytesToHex(Crypto.util.wordsToBytes(hash));
             }
             else
             {
@@ -125,5 +123,28 @@ function sha1File(settings)
         reader.readAsArrayBuffer(blob);
     }
 
-    run(settings.file,0,buffer);
+     var checkApi = function()
+     {
+        if((typeof File == 'undefined'))
+            return false;
+
+        if (!File.prototype.slice) {
+            if(File.prototype.webkitSlice)
+                File.prototype.slice = File.prototype.webkitSlice;
+            else if(File.prototype.mozSlice)
+                File.prototype.slice = File.prototype.mozSlice;
+        }
+
+        if (!window.File || !window.FileReader || !window.FileList || !window.Blob || !File.prototype.slice)
+            return false;
+
+         return true;
+    }
+
+    if(checkApi())
+    {
+        run(settings.file,0,buffer);
+    }
+    else
+        return false;
 }
